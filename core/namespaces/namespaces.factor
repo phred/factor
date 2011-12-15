@@ -43,12 +43,14 @@ PRIVATE>
 : set-namestack ( namestack -- )
     >vector CONTEXT-OBJ-NAMESTACK set-context-object ;
 : init-namespaces ( -- ) global 1array set-namestack ;
-: get ( variable -- value ) namestack* assoc-stack ; inline
+: get-global ( variable -- value ) global at ; inline
+: set-global ( value variable -- ) global set-at ; inline
+: get ( variable -- value )
+    dup namestack* assoc-stack*
+    [ nip ] [ drop get-global ] if ; inline
 : set ( value variable -- ) namespace set-at ;
 : on ( variable -- ) t swap set ; inline
 : off ( variable -- ) f swap set ; inline
-: get-global ( variable -- value ) global at ; inline
-: set-global ( value variable -- ) global set-at ; inline
 : change ( variable quot -- ) [ [ get ] keep ] dip dip set ; inline
 : change-global ( variable quot -- ) [ [ get-global ] keep ] dip dip set-global ; inline
 : toggle ( variable -- ) [ not ] change ; inline
