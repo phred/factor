@@ -35,7 +35,7 @@ SYMBOL: bootstrap-time
 
 : load-components ( -- )
     "include" "exclude"
-    [ get-global dup print " " split harvest ] bi@
+    [ get-global " " split harvest ] bi@
     diff
     [ "bootstrap." prepend require ] each ;
 
