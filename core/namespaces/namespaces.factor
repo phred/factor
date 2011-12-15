@@ -38,11 +38,11 @@ PRIVATE>
 
 : global ( -- g ) OBJ-GLOBAL special-object { global-hashtable } declare ; foldable
 
-: namespace ( -- namespace ) namestack* last ; inline
+: namespace ( -- namespace ) namestack* [ global ] [ last ] if-empty ; inline
 : namestack ( -- namestack ) namestack* clone ;
 : set-namestack ( namestack -- )
     >vector CONTEXT-OBJ-NAMESTACK set-context-object ;
-: init-namespaces ( -- ) global 1array set-namestack ;
+: init-namespaces ( -- ) V{ } clone set-namestack ;
 : get-global ( variable -- value ) global at ; inline
 : set-global ( value variable -- ) global set-at ; inline
 : get ( variable -- value )
