@@ -30,6 +30,14 @@ M: assoc assoc-like drop ; inline
 : (assoc-each) ( assoc quot -- seq quot' )
     [ >alist ] dip [ first2 ] prepose ; inline
 
+: (assoc-stack*) ( key i seq -- value ? )
+    over 0 < [
+        3drop f f
+    ] [
+        3dup nth-unsafe at*
+        [ [ 3drop ] dip t ] [ drop [ 1 - ] dip (assoc-stack*) ] if
+    ] if ; inline recursive
+
 : (assoc-stack) ( key i seq -- value )
     over 0 < [
         3drop f
@@ -110,8 +118,11 @@ M: assoc assoc-clone-like ( assoc exemplar -- newassoc )
 : assoc-empty? ( assoc -- ? )
     assoc-size 0 = ;
 
+: assoc-stack* ( key seq -- value ? )
+    [ length 1 - ] keep (assoc-stack*) ; flushable
+
 : assoc-stack ( key seq -- value )
-    [ length 1 - ] keep (assoc-stack) ; flushable
+    assoc-stack* drop ; inline
 
 : assoc-subset? ( assoc1 assoc2 -- ? )
     [ at* [ = ] [ 2drop f ] if ] with-assoc assoc-all? ;

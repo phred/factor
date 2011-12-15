@@ -195,7 +195,8 @@ unit-test
     } assoc-refine
 ] unit-test
 
-[ f ] [ "a" { } assoc-stack ] unit-test
-[ 1 ] [ "a" { H{ { "a" 1 } } H{ { "b" 2 } } } assoc-stack ] unit-test
-[ 2 ] [ "b" { H{ { "a" 1 } } H{ { "b" 2 } } } assoc-stack ] unit-test
-[ f ] [ "c" { H{ { "a" 1 } } H{ { "b" 2 } } } assoc-stack ] unit-test
+[ f f ] [ "a" { } assoc-stack* ] unit-test
+[ 1 t ] [ "a" { H{ { "a" 1 } } H{ { "b" 2 } } } assoc-stack* ] unit-test
+[ 2 t ] [ "b" { H{ { "a" 1 } } H{ { "b" 2 } } } assoc-stack* ] unit-test
+[ f f ] [ "c" { H{ { "a" 1 } } H{ { "b" 2 } } } assoc-stack* ] unit-test
+[ f t ] [ "c" { H{ { "a" 1 } } H{ { "b" 2 } } H{ { "c" f } } } assoc-stack* ] unit-test
