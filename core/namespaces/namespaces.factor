@@ -50,7 +50,7 @@ PRIVATE>
 : get-global ( variable -- value ) global at ; inline
 : set-global ( value variable -- ) global set-at ; inline
 : change ( variable quot -- ) [ [ get ] keep ] dip dip set ; inline
-: change-global ( variable quot -- ) [ global ] dip change-at ; inline
+: change-global ( variable quot -- ) [ [ get-global ] keep ] dip dip set-global ; inline
 : toggle ( variable -- ) [ not ] change ; inline
 : +@ ( n variable -- ) [ 0 or + ] change ; inline
 : inc ( variable -- ) 1 swap +@ ; inline
