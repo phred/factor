@@ -10,13 +10,13 @@ math.order quotations quotations.private assocs.private vocabs.loader ;
 FROM: compiler => enable-optimizer ;
 IN: bootstrap.compiler
 
-"profile-compiler" get [
+"profile-compiler" get-flag [
     "bootstrap.compiler.timing" require
 ] when
 
 ! Don't bring this in when deploying, since it will store a
 ! reference to 'eval' in a global variable
-"deploy-vocab" get "staging" get or [
+"deploy-vocab" get-flag "staging" get-flag or [
     "alien.remote-control" require
 ] unless
 
@@ -34,7 +34,7 @@ gc
     [ [ subwords ] map ] keep suffix concat
     [ optimized? not ] filter compile ;
 
-"debug-compiler" get [
+"debug-compiler" get-flag [
 
     nl
     "Compiling..." write flush

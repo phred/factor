@@ -616,10 +616,10 @@ SYMBOL: deploy-vocab
 
 : do-deploy ( -- )
     "output-image" get
-    "vocab-manifest-out" get
-    "deploy-vocab" get
+    "vocab-manifest-out" get-flag
+    "deploy-vocab" get-flag
     "Deploying " write dup write "..." print
-    "deploy-config" get parse-file first
+    "deploy-config" get-flag parse-file first
     (deploy) ;
 
 MAIN: do-deploy

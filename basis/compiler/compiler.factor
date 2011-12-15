@@ -4,6 +4,7 @@ USING: accessors kernel namespaces arrays sequences io words fry
 continuations vocabs assocs definitions math graphs generic
 generic.single combinators macros make source-files.errors
 combinators.short-circuit classes.algebra vocabs.loader
+command-line
 
 stack-checker stack-checker.dependencies stack-checker.inlining
 stack-checker.errors
@@ -32,7 +33,7 @@ SYMBOL: compiled
     } 1|| not ;
 
 : compiler-message ( string -- )
-    "trace-compilation" get [ [ print flush ] with-global ] [ drop ] if ;
+    "trace-compilation" get-flag [ [ print flush ] with-global ] [ drop ] if ;
 
 : start ( word -- )
     dup name>> compiler-message

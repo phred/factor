@@ -24,7 +24,7 @@ from within Factor for more information.
 """ write ;
 
 : help? ( -- ? )
-    "help" get "-help" get or "h" get or
+    "help" get-flag "-help" get-flag or "h" get-flag or
     os windows? [ script get "/?" = ] [ f ] if or ;
 
 : command-line-startup ( -- )
@@ -32,11 +32,11 @@ from within Factor for more information.
     help? [ cli-usage ] [
         load-vocab-roots
         run-user-init
-        "e" get script get or [
-            "e" get [ eval( -- ) ] when*
+        "e" get-flag script get or [
+            "e" get-flag [ eval( -- ) ] when*
             script get [ run-script ] when*
         ] [
-            "run" get run
+            "run" get-flag run
         ] if
     ] if
 

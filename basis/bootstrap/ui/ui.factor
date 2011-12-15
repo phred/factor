@@ -1,12 +1,12 @@
 USING: alien namespaces system combinators kernel sequences
-vocabs ;
+vocabs command-line ;
 IN: bootstrap.ui
 
 "bootstrap.math" require
 "bootstrap.compiler" require
 "bootstrap.threads" require
 
-"ui-backend" get [
+"ui-backend" get-flag [
     {
         { [ os macosx? ] [ "cocoa" ] }
         { [ os windows? ] [ "windows" ] }

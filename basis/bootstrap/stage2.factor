@@ -24,9 +24,18 @@ SYMBOL: bootstrap-time
     vm file-name os windows? [ "." split1-last drop ] when
     ".image" append resource-path ;
 
+: get-component-flags ( -- )
+    "output-image" get-flag [ default-image-name ] unless* "output-image" set-global
+
+    "include" get-flag [
+        "math compiler threads help io tools ui ui.tools unicode handbook"
+    ] unless* "include" set-global
+
+    "exclude" get-flag [ "" ] unless* "exclude" set-global ;
+
 : load-components ( -- )
     "include" "exclude"
-    [ get-global " " split harvest ] bi@
+    [ get-global dup print " " split harvest ] bi@
     diff
     [ "bootstrap." prepend require ] each ;
 
@@ -64,19 +73,16 @@ SYMBOL: bootstrap-time
     ! We have to change it back in finish-bootstrap.factor
     f parser-quiet? set-global
 
-    default-image-name "output-image" set-global
-
-    "math compiler threads help io tools ui ui.tools unicode handbook" "include" set-global
-    "" "exclude" set-global
-
     strip-encodings
 
     (command-line) parse-command-line
 
+    get-component-flags
+
     ! Set dll paths
     os windows? [ "windows" require ] when
 
-    "staging" get "deploy-vocab" get or [
+    "staging" get-flag "deploy-vocab" get-flag or [
         "stage2: deployment mode" print
     ] [
         "debugger" require
@@ -97,10 +103,10 @@ SYMBOL: bootstrap-time
     nano-count swap - bootstrap-time set-global
     print-report
 
-    "deploy-vocab" get [
+    "deploy-vocab" get-flag [
         "tools.deploy.shaker" run
     ] [
-        "staging" get [
+        "staging" get-flag [
             "vocab:bootstrap/finish-staging.factor" run-file
         ] [
             "vocab:bootstrap/finish-bootstrap.factor" run-file

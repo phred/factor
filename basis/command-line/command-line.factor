@@ -20,6 +20,15 @@ M: user-init-error error-type drop +user-init-error+ ;
 
 SYMBOL: script
 SYMBOL: command-line
+SYMBOL: flags
+
+<PRIVATE
+
+: set-flag ( value name -- ) flags get-global set-at ; inline
+
+PRIVATE>
+
+: get-flag ( name -- value ) flags get-global at ; inline
 
 : (command-line) ( -- args )
     OBJ-ARGS special-object sift [ alien>native-string ] map ;
@@ -28,7 +37,7 @@ SYMBOL: command-line
     home prepend-path ;
 
 : try-user-init ( file -- )
-    "user-init" get swap '[
+    "user-init" get-flag swap '[
         _ [ ?run-file ] [
             <user-init-error>
             swap user-init-errors get set-at
@@ -43,13 +52,13 @@ SYMBOL: command-line
     ".factor-rc" rc-path try-user-init ;
 
 : load-vocab-roots ( -- )
-    "user-init" get [
+    "user-init" get-flag [
         ".factor-roots" rc-path dup exists? [
             utf8 file-lines harvest [ add-vocab-root ] each
         ] [ drop ] if
     ] when ;
 
-: var-param ( name value -- ) swap set-global ;
+: var-param ( name value -- ) swap set-flag ;
 
 : bool-param ( name -- ) "no-" ?head not var-param ;
 
@@ -62,11 +71,15 @@ SYMBOL: command-line
         [ source-file main>> [ execute( -- ) ] when* ] bi
     ] with-variable ;
 
+: set-resource-path ( -- )
+    "resource-path" get-flag [ "resource-path" set-global ] when* ;
+
 : parse-command-line ( args -- )
     [ command-line off script off ] [
         unclip "-" ?head
         [ param parse-command-line ]
         [ script set command-line set ] if
+        set-resource-path
     ] if-empty ;
 
 SYMBOL: main-vocab-hook
@@ -79,14 +92,13 @@ SYMBOL: main-vocab-hook
     ] if ;
 
 : default-cli-args ( -- )
-    [
-        "e" off
-        "user-init" on
-        main-vocab "run" set
-    ] with-global ;
+    f "e" set-flag
+    t "user-init" set-flag
+    main-vocab "run" set-flag ;
 
 [
     H{ } user-init-errors set-global
+    H{ } flags set-global
     default-cli-args
 ] "command-line" add-startup-hook
 

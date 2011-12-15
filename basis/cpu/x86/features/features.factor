@@ -4,7 +4,7 @@ USING: accessors assocs sequences alien alien.c-types
 combinators compiler compiler.codegen.labels compiler.units
 cpu.architecture cpu.x86.assembler cpu.x86.assembler.operands
 init io kernel locals math math.order math.parser memoize
-namespaces system ;
+namespaces system command-line ;
 IN: cpu.x86.features
 
 <PRIVATE
@@ -75,7 +75,7 @@ IN: cpu.x86.features
 PRIVATE>
 
 MEMO: sse-version ( -- n )
-    (sse-version) "sse-version" get string>number [ min ] when* ;
+    (sse-version) "sse-version" get-flag string>number [ min ] when* ;
 
 : sse? ( -- ? ) sse-version 10 >= ;
 : sse2? ( -- ? ) sse-version 20 >= ;
@@ -94,7 +94,7 @@ MEMO: sse-version ( -- n )
     ] alien-assembly ;
 
 MEMO: enable-popcnt? ( -- ? )
-    popcnt? "enable-popcnt" get and ;
+    popcnt? "enable-popcnt" get-flag and ;
 
 [ { sse-version enable-popcnt? } [ reset-memoized ] each ]
 "cpu.x86.features" add-startup-hook
