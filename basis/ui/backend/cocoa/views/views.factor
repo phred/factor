@@ -118,12 +118,12 @@ CONSTANT: key-codes
     [ drop [ gadget-selection? ] [ drop t ] if ] [ 3drop f ] if ;
 
 : NSRect>rect ( NSRect world -- rect )
-    [ [ [ CGRect-x ] [ CGRect-y ] bi ] [ dim>> second ] bi* swap - 2array ]
+    [ [ [ CGRect-x ] [ CGRect-y ] bi ] [ window-dim>> second ] bi* swap - 2array ]
     [ drop [ CGRect-w ] [ CGRect-h ] bi 2array ]
     2bi <rect> ;
 
 : rect>NSRect ( rect world -- NSRect )
-    [ [ loc>> first2 ] [ dim>> second ] bi* swap - ]
+    [ [ loc>> first2 ] [ window-dim>> second ] bi* swap - ]
     [ drop dim>> first2 ]
     2bi <CGRect> ;
 
@@ -310,7 +310,7 @@ CLASS: FactorView < NSOpenGLView NSTextInput
     [
         self window :> window
         window [
-            self view-dim window dim<< yield
+            self view-dim window set-window-dim yield
         ] when
     ]
 

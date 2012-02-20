@@ -286,7 +286,7 @@ CONSTANT: window-control>ex-style
 : handle-wm-size ( hWnd uMsg wParam lParam -- )
     2nip
     [ lo-word ] keep hi-word 2array
-    dup { 0 0 } = [ 2drop ] [ swap window [ dim<< ] [ drop ] if* ] if ;
+    dup { 0 0 } = [ 2drop ] [ swap window [ set-window-dim ] [ drop ] if* ] if ;
 
 : handle-wm-move ( hWnd uMsg wParam lParam -- )
     2nip
@@ -653,7 +653,7 @@ M: windows-ui-backend do-events
     [ 0 ] dip AdjustWindowRectEx win32-error=0/f ;
 
 : make-RECT ( world -- RECT )
-    [ window-loc>> ] [ dim>> ] bi <RECT> ;
+    [ window-loc>> ] [ window-dim>> ] bi <RECT> ;
 
 : default-position-RECT ( RECT -- RECT' )
     dup get-RECT-width/height
@@ -743,7 +743,7 @@ M: win-base flush-gl-context ( handle -- )
     hDC>> SwapBuffers win32-error=0/f ;
 
 : setup-offscreen-gl ( world -- )
-    dup [ handle>> ] [ dim>> ] bi make-offscreen-dc-and-bitmap
+    dup [ handle>> ] [ window-dim>> ] bi make-offscreen-dc-and-bitmap
     [ >>hDC ] [ >>hBitmap ] [ >>bits ] tri* drop [
         swap [ handle>> hDC>> set-pixel-format ] [ get-rc ] bi
     ] with-world-pixel-format ;
@@ -765,10 +765,10 @@ M: windows-ui-backend (close-offscreen-buffer) ( handle -- )
     [ ] tri ;
 
 : (opaque-pixels) ( world -- pixels )
-    [ handle>> bits>> ] [ dim>> ] bi bitmap>byte-array (make-opaque) ;
+    [ handle>> bits>> ] [ window-dim>> ] bi bitmap>byte-array (make-opaque) ;
 
 M: windows-ui-backend offscreen-pixels ( world -- alien w h )
-    [ (opaque-pixels) ] [ dim>> first2 ] bi ;
+    [ (opaque-pixels) ] [ window-dim>> first2 ] bi ;
 
 M: windows-ui-backend raise-window* ( world -- )
     handle>> [ hWnd>> SetFocus drop ] when* ;

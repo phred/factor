@@ -284,13 +284,16 @@ SYMBOL: drag-timer
 : under-hand ( -- seq )
     hand-gadget get-global parents <reversed> ;
 
-: move-hand ( loc world -- )
+: (move-hand) ( scaled-loc world -- )
     dup hand-world set-global
     under-hand [
         over hand-loc set-global
         pick-up hand-gadget set-global
         under-hand
     ] dip hand-gestures ;
+
+: move-hand ( loc world -- )
+    [ scale>> v/n ] keep (move-hand) ; inline
 
 : send-button-down ( gesture loc world -- )
     move-hand

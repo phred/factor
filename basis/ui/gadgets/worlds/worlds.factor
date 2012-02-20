@@ -39,6 +39,8 @@ TUPLE: world < track
     title status status-owner
     text-handle handle images
     window-loc
+    window-dim
+    scale
     pixel-format-attributes
     background-color
     promise
@@ -73,7 +75,7 @@ TUPLE: world-attributes
         f >>grab-input?
         dup focused?>> [ handle>> (ungrab-input) ] [ drop ] if
     ] [ drop ] if ;
-    
+
 : show-status ( string/f gadget -- )
     dup find-world dup [
         dup status>> [
@@ -119,6 +121,8 @@ M: world request-focus-on ( child gadget -- )
         t >>root?
         f >>active?
         { 0 0 } >>window-loc
+        dup dim>> >>window-dim
+        1 >>scale
         f >>grab-input?
         V{ } clone >>window-resources
         <promise> >>promise ;
@@ -173,15 +177,23 @@ M: world begin-world drop ;
 M: world end-world drop ;
 M: world resize-world drop ;
 
-M: world dim<<
-    [ call-next-method ]
+: set-window-dim ( scale world -- )
+    [ window-dim<< ]
+    [ [ scale>> v/n ] keep dim<< ]
     [
-        dup active?>> [
+        nip dup active?>> [
             dup handle>>
             [ [ set-gl-context ] [ resize-world ] bi ]
             [ drop ] if
         ] [ drop ] if
-    ] bi ;
+    ] 2tri ;
+
+M: world dim<<
+    [ call-next-method ]
+    [ [ scale>> v*n ] keep window-dim<< ] 2bi ;
+
+: set-world-scale ( scale world -- )
+    [ scale<< ] [ [ window-dim>> ] keep set-window-dim ] bi ;
 
 GENERIC: draw-world* ( world -- )
 

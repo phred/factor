@@ -112,7 +112,7 @@ M: world ungraft*
 
 : update-hand ( world -- )
     dup hand-world get-global eq?
-    [ hand-loc get-global swap move-hand ] [ drop ] if ;
+    [ hand-loc get-global swap (move-hand) ] [ drop ] if ;
 
 : layout-queued ( -- seq )
     [

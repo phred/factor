@@ -2,29 +2,33 @@
 ! See http://factorcode.org/license.txt for BSD license.
 USING: math.rectangles math.vectors namespaces kernel accessors
 assocs combinators sequences opengl opengl.gl colors
-colors.constants ui.gadgets ui.pens ;
+colors.constants ui.gadgets ui.pens locals arrays ;
 IN: ui.render
 
 SYMBOL: clip
 
-SYMBOL: viewport-translation
+SYMBOL: viewport-transform
 
-: flip-rect ( rect -- loc dim )
-    rect-bounds [
+SLOT: window-dim
+SLOT: scale
+
+:: flip-rect ( rect -- loc dim )
+    viewport-transform get first2 :> ( translate scale )
+    rect rect-bounds [ scale v*n ] bi@ [
         [ { 1 -1 } v* ] dip { 0 -1 } v* v+
-        viewport-translation get v+
+        translate v+
     ] keep ;
 
 : do-clip ( -- ) clip get flip-rect gl-set-clip ;
 
-: init-clip ( clip-rect -- )
-    [
-        dim>>
-        [ { 0 1 } v* viewport-translation set ]
-        [ [ { 0 0 } ] dip gl-viewport ]
-        [ [ 0 ] dip first2 0 1 -1 glOrtho ] tri
-    ]
-    [ clip set ] bi
+:: init-clip ( world -- )
+    world window-dim>> :> window-dim
+    world dim>> :> dim
+    world scale>> :> scale
+    window-dim { 0 1 } v* scale 2array viewport-transform set
+    { 0 0 } window-dim gl-viewport
+    0 dim first2 0 1 -1 glOrtho
+    world clip set
     do-clip ;
 
 SLOT: background-color

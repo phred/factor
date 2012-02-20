@@ -264,7 +264,7 @@ CONSTANT: action-key-codes
 
 : on-configure ( win event user-data -- ? )
     drop [ window ] [ GdkEventConfigure memory>struct ] bi*
-    [ event-loc >>window-loc ] [ event-dim >>dim ] bi
+    [ event-loc >>window-loc ] [ event-dim over set-window-dim ] bi
     relayout-1 f ;
 
 : on-delete ( win event user-data -- ? )
@@ -454,7 +454,7 @@ M:: gtk-ui-backend (open-window) ( world -- )
     world win register-window
 
     win world [ window-loc>> auto-position ]
-    [ dim>> first2 gtk_window_set_default_size ] 2bi
+    [ window-dim>> first2 gtk_window_set_default_size ] 2bi
 
     win "factor" "Factor" [ utf8 string>alien ] bi@
     gtk_window_set_wmclass

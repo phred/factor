@@ -77,7 +77,7 @@ M: pasteboard set-clipboard-contents
     <clipboard> selection set-global ;
 
 : world>NSRect ( world -- NSRect )
-    [ 0 0 ] dip dim>> first2 <CGRect> ;
+    [ 0 0 ] dip window-dim>> first2 <CGRect> ;
 
 : auto-position ( window loc -- )
     #! Note: if this is the initial window, the length of the windows
@@ -182,7 +182,7 @@ M: cocoa-ui-backend raise-window* ( world -- )
     color-bits pixel-format-attribute -3 shift ;
 
 : offscreen-buffer ( world pixel-format -- alien w h pitch )
-    [ dim>> first2 ] [ pixel-size ] bi*
+    [ window-dim>> first2 ] [ pixel-size ] bi*
     { [ * * malloc ] [ 2drop ] [ drop nip ] [ nip * ] } 3cleave ;
 
 :: gadget-offscreen-context ( world -- context buffer )
@@ -211,7 +211,7 @@ M: handle flush-gl-context ( handle -- )
     (gl-context) -> flushBuffer ;
 
 M: cocoa-ui-backend offscreen-pixels ( world -- alien w h )
-    [ handle>> buffer>> ] [ dim>> first2 neg ] bi ;
+    [ handle>> buffer>> ] [ window-dim>> first2 neg ] bi ;
 
 M: cocoa-ui-backend beep ( -- )
     NSBeep ;
