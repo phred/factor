@@ -183,10 +183,11 @@ SYMBOLS: +dinput+ +keyboard-device+ +keyboard-state+
         [ 2drop ]
     } cond ;
 
-TUPLE: window-rect < rect window-loc ;
+TUPLE: window-rect < rect window-loc window-dim ;
 : <zero-window-rect> ( -- window-rect )
     window-rect new
     { 0 0 } >>window-loc
+    { 0 0 } >>window-dim
     { 0 0 } >>loc
     { 0 0 } >>dim ;
 
